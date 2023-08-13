@@ -1,10 +1,18 @@
 import { getAvailableSports } from "./availableSport.js";
 import { getSportOdds } from "./liveSportOdds.js";
 import { getSportScores } from "./liveSportScores.js";
+import StreamrClient from 'streamr-client';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+let availableSports;
+let oddsData;
+let sportScores;
 
 async function fetchAvailableSports() {
   try {
-    const availableSports = await getAvailableSports();
+    availableSports = await getAvailableSports();
   } catch (error) {
     console.error("Error fetching available sports:", error);
   }
@@ -12,7 +20,7 @@ async function fetchAvailableSports() {
 
 async function fetchSportOdds() {
   try {
-    const oddsData = await getSportOdds();
+    oddsData = await getSportOdds();
   } catch (error) {
     console.error("Error fetching sport odds:", error);
   }
@@ -20,7 +28,7 @@ async function fetchSportOdds() {
 
 async function fetchSportScores() {
   try {
-    const sportScores = await getSportScores();
+    sportScores = await getSportScores();
   } catch (error) {
     console.error("Error fetching sport scores:", error);
   }
@@ -33,3 +41,17 @@ async function main() {
 }
 
 main();
+
+const streamr = new StreamrClient({
+  auth: {
+      privateKey: process.env.PRIVATE_KEY,
+  },
+})
+
+const stream = await streamr.getOrCreateStream({
+  id: '/amdonatusprince',
+})
+
+await streamr.publish('/amdonatusprince', oddsData)
+await streamr.publish('/amdonatusprince', availableSports)
+await streamr.publish('/amdonatusprince', sportScores)
