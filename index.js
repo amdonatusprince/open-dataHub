@@ -52,6 +52,7 @@ const stream = await streamr.getOrCreateStream({
   id: '/amdonatusprince',
 })
 
+// Pushing off-chain data available on-chain using Streamr Network
 await streamr.publish('/amdonatusprince', oddsData)
 await streamr.publish('/amdonatusprince', availableSports)
 await streamr.publish('/amdonatusprince', sportScores)
