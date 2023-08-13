@@ -1,6 +1,10 @@
 import axios from 'axios';
-require('dotenv').config()
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+
+export const getAvailableSports = async () => {
 const options = {
   method: 'GET',
   url: 'https://odds.p.rapidapi.com/v4/sports',
@@ -17,3 +21,5 @@ try {
 } catch (error) {
 	console.error(error);
 }
+
+};

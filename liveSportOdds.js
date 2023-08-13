@@ -1,25 +1,30 @@
 import axios from 'axios';
+import dotenv from 'dotenv';
 
-require('dotenv').config()
+dotenv.config();
 
-const options = {
-  method: 'GET',
-  url: 'https://odds.p.rapidapi.com/v4/sports/upcoming/odds',
-  params: {
-    regions: 'us',
-    oddsFormat: 'decimal',
-    markets: 'h2h,spreads',
-    dateFormat: 'iso'
-  },
-  headers: {
-    'X-RapidAPI-Key': process.env.API_KEY,
-    'X-RapidAPI-Host': 'odds.p.rapidapi.com'
-  }
-};
+export const getSportOdds = async () => {
+    const options = {
+      method: 'GET',
+      url: 'https://odds.p.rapidapi.com/v4/sports/upcoming/odds',
+      params: {
+        regions: 'us,us2,uk,au,eu',
+        oddsFormat: 'decimal',
+        markets: 'h2h,spreads,totals,outrights',
+        dateFormat: 'iso'
+      },
+      headers: {
+        'X-RapidAPI-Key': process.env.API_KEY,
+        'X-RapidAPI-Host': 'odds.p.rapidapi.com'
+      }
+    };
+  
+    try {
+      const response = await axios.request(options);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
 
-try {
-	const response = await axios.request(options);
-	console.log(response.data);
-} catch (error) {
-	console.error(error);
-}
+
+  };
