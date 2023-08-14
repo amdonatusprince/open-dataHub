@@ -10,7 +10,7 @@ export const getSportOdds = async () => {
       params: {
         regions: 'us,us2,uk,au,eu',
         oddsFormat: 'decimal',
-        markets: 'h2h,spreads,totals,outrights',
+        markets: 'h2h,spreads',
         dateFormat: 'iso'
       },
       headers: {
@@ -21,7 +21,7 @@ export const getSportOdds = async () => {
   
     try {
       const response = await axios.request(options);
-      return response.data;
+      return { sportsOdds: response.data };
     } catch (error) {
       throw error;
     }

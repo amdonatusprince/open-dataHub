@@ -6,17 +6,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let availableSports;
 let oddsData;
 let sportScores;
-
-async function fetchAvailableSports() {
-  try {
-    availableSports = await getAvailableSports();
-  } catch (error) {
-    console.error("Error fetching available sports:", error);
-  }
-}
 
 async function fetchSportOdds() {
   try {
@@ -35,24 +26,37 @@ async function fetchSportScores() {
 }
 
 async function main() {
-  await fetchAvailableSports();
+
   await fetchSportOdds();
   await fetchSportScores();
+
+  const streamr = new StreamrClient({
+    auth: {
+        privateKey: process.env.PRIVATE_KEY,
+    },
+  })
+
+  const stream1 = await streamr.getOrCreateStream({
+    id: '/livesportscores',
+  })
+
+  const stream2 = await streamr.getOrCreateStream({
+    id: '/livesportodds',
+  })
+
+  // Pushing off-chain data available on-chain using Streamr Network
+
+  console.log("Publishing to the Live Sport Odds Stream...")
+  await streamr.publish('/livesportodds', oddsData)
+  console.log("Done!")
+
+  console.log("Publishing to the Live Sport Scores Stream...")
+  await streamr.publish('/livesportscores', sportScores)
+  console.log("Done!")
+
 }
 
 main();
 
-const streamr = new StreamrClient({
-  auth: {
-      privateKey: process.env.PRIVATE_KEY,
-  },
-})
 
-const stream = await streamr.getOrCreateStream({
-  id: '/amdonatusprince',
-})
 
-// Pushing off-chain data available on-chain using Streamr Network
-await streamr.publish('/amdonatusprince', oddsData)
-await streamr.publish('/amdonatusprince', availableSports)
-await streamr.publish('/amdonatusprince', sportScores)

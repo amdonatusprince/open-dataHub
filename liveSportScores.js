@@ -3,11 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
 export const getSportScores = async () => {
 const options = {
   method: 'GET',
-  url: 'https://odds.p.rapidapi.com/v4/sports/americanfootball_nfl/scores',
+  url: 'https://odds.p.rapidapi.com/v4/sports/',
   params: {daysFrom: '3'},
   headers: {
     'X-RapidAPI-Key': process.env.API_KEY,
@@ -17,9 +16,9 @@ const options = {
 
 try {
 	const response = await axios.request(options);
-	console.log(response.data);
+	return { sportScores: response.data };
 } catch (error) {
-	console.error(error);
+  throw error;
 }
 
 };
